@@ -1,0 +1,151 @@
+// fonts
+//@font-family: Franklin ITC W01 Medium, sans-serif;
+@font-family-fallback: Arial, Helvetica, Sans-Serif;
+@font-family: 'SourceSansPro-regular', @font-family-fallback;
+@font-family-bold: 'SourceSansPro-semibold', @font-family-fallback;
+
+//navigation
+@navigation-width: 30rem;
+@navigation-height: 6rem;
+@navigation-timing: 250;
+@navigation-delay: 0;
+@navigation-width-close: 70;
+
+@navigation-width-mobile: 27rem;
+
+//grid system
+@number: 5;
+@gutter: 1.8;
+@gutter-min: 0.8;
+@space-value: 1.5rem;
+
+// Modal
+@modal-trans-timing: 0.25s;
+@modal-trans-delay: 0.1s;
+
+@default-color: #004893;
+@default-color-transparent: #99b6d4;
+@default-color-dark: #003a76;
+
+//
+@bullet-active-width-mobile: 39px;
+@bullet-active-width: 26px;
+@bullet-active-offset: 10px;
+@bullet-width-mobile: 39px;
+@bullet-width: 16px;
+@bullet-offset: 8px;
+
+// Old generic shades of grey
+@medium: #999;
+
+// generic state color code
+@error-color: #ce4234;
+@valid-color: #4dab15;
+@focus-color: #3032c1;
+@warning-color: #ff6500;
+
+@disabled-color: #f5f5f5;
+@disabled-border-color: #e5e5e5;
+
+@white: #fff;
+@ultra-very-light-grey: #f1f1f1;
+@ultra-light-grey: #f4f7ff;
+@very-very-light-grey: #f5f5f5;
+@very-light-grey: #ccc;
+@lighter-grey: #6f6f6f;
+@light-grey: #a7a7a7;
+@medium-grey: #999;
+@slightly-medium-grey: #8d8d8d;
+@dark-grey: #666;
+@dark: #5f5f5f;
+@light-dark: #7f7f7f;
+@light-gray: #b3b3b3;
+@very-dark-grey: #333;
+@black: #000;
+
+// AXA DEFAULT COLORS
+@light-blue: #3b3fd8;
+@standard-blue: #00008f;
+@dark-blue-odd: #0a1d4f;
+@dark-blue-even: #0b225c;
+@high-blue: #494df4;
+@blue-pacific: #00a3ba;
+@fluo-blue: #00adc4;
+@very-light-blue: #e3f2fd;
+@blue-deep-saphire: #00005b;
+@blue-french-pass: #b8d8fd;
+
+// QUICK QUOTE COLORS
+@pro-very-dark-blue: #002449;
+@pro-dark-blue: #103184;
+@pro-medium-blue: #2b4ea5;
+@pro-very-light-blue: #95a7d2;
+
+@pro-box-very-light-blue: #edf2fe;
+@pro-box-medium-blue: #637cb8;
+
+@output-box-bg: #4ea6e6;
+
+//
+@medium-green: #47a80d;
+@medium-dark-green: #3c8f0b;
+@dark-green: #2e6d08;
+
+@orange: #ff6500;
+
+@light-red: #f7ebeb;
+@red: #c91432;
+
+@tarif-width: 632px;
+
+//media queries
+@highdensity: ~"only screen and (-webkit-min-device-pixel-ratio: 1.5)",
+    ~"only screen and (min--moz-device-pixel-ratio: 1.5)",
+    ~"only screen and (-o-min-device-pixel-ratio: 3/2)",
+    ~"only screen and (min-device-pixel-ratio: 1.5)";
+@only-mobile: ~"only screen and (max-width: 749px)";
+@only-tablet: ~"only screen and (min-width: 750px) and (max-width: 1024px)";
+@tablet: ~"only screen and (min-width: 750px)";
+@desktop: ~"only screen and (min-width: 1025px)";
+@desktop-hd: ~"only screen and (min-width: 1280px)";
+@desktop-uhd: ~"only screen and (min-width: 1600px)";
+
+// Real media queries
+@mobileOver: ~"only screen and (min-width: 361px)";
+
+@footer-height: 78px;
+@footer-height-mobile: 102px;
+
+/* Generic styles for error messaging display.
+*/
+.error-message() {
+    color: @error-color;
+    display: block;
+    font-size: 1.6rem;
+    height: auto;
+    line-height: 2rem;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 100%;
+
+    &.error-message-hidden {
+        display: none;
+    }
+}
+
+.warning-message() {
+    color: @orange;
+    display: block;
+    font-size: 1.6rem;
+    height: auto;
+    line-height: 2rem;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 100%;
+
+    &.warning-message-hidden {
+        display: none;
+    }
+}
