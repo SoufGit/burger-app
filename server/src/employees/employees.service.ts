@@ -1,42 +1,71 @@
+import { Connection, Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { employeeList } from '../data/data';
-import { Employee } from './interface/employee.interface';
+//import { Employee } from './interface/employee.interface';
+import { Employee, EmployeeDocument } from './schemas/employee.schema';
+import { AddEmployeeDto } from './dto/add-employee.dto';
 
 @Injectable()
 export class EmployeesService {
+    constructor(@InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>
+        //@InjectConnection() private connection: Connection
+    ) { }
 
-    getEmployee(id: string) {
-        return employeeList.find(employee => employee.id === Number(id));
-    };
+    async getEmployeeById(id: string): Promise<Employee> {
+        const employee = await this.employeeModel.findById(id).exec();
+        return employee;
+    }
 
-    getEmployeeList(): Employee[] {
-        return employeeList;
-    };
+    async getEmployeeList(): Promise<Employee[]> {
+        console.log('EmployeeEmployee', Employee);
+        return this.employeeModel.find().exec();
+    }
 
-    updateEmployee(id: string, employeeUpdated: Employee) {
-        console.log('employeeUpdatedemployeeUpdated', employeeUpdated);
-        let employeeToUpdate = employeeList.find(employee => employee.id === Number(id));
-        if (!employeeToUpdate) {
-            return new NotFoundException('Personne à mettre à jour!!!');
-        };
+    async updateEmployee(id: string, addEmployeeDto: AddEmployeeDto): Promise<any> {
+        return await this.employeeModel.findByIdAndUpdate(id, addEmployeeDto, { new: true });
+    }
 
-        employeeToUpdate = {
-            ...employeeToUpdate,
-            ...employeeUpdated
-        };
-        const updatedEmployeeList = employeeList.map(employee => employee.id !== +id ? employee : employeeToUpdate);
-        return { updatedEmployee: 1, employee: employeeToUpdate, employeeList: updatedEmployeeList };
-    };
+    async addEmployee(addEmployeeDto: AddEmployeeDto): Promise<Employee> {
+        const addEmployee = new this.employeeModel(addEmployeeDto);
+        return addEmployee.save();
+    }
 
-    createEmployee(newEmployee: Employee) {
-        const newEmployeeList = [...employeeList, newEmployee];
-        return { createdEmployee: 1, employee: newEmployee, employeeList: newEmployeeList };
-    };
+    async deleteEmployee(id: string): Promise<any> {
+        return await this.employeeModel.findByIdAndRemove(id);
+    }
+    // getEmployee(id: string) {
+    //     return employeeList.find(employee => employee.id === Number(id));
+    // };
 
-    deleteEmployee(id: string) {
-        const employeeToDelete = employeeList.filter(employee => employee.id !== Number(id));
-        return { deletedEmployee: 1, employeeList: employeeToDelete };
-    };
+    // getEmployeeList(): Employee[] {
+    //     return employeeList;
+    // };
+
+    // updateEmployee(id: string, employeeUpdated: Employee) {
+    //     console.log('employeeUpdatedemployeeUpdated', employeeUpdated);
+    //     let employeeToUpdate = employeeList.find(employee => employee.id === Number(id));
+    //     if (!employeeToUpdate) {
+    //         return new NotFoundException('Personne à mettre à jour!!!');
+    //     };
+
+    //     employeeToUpdate = {
+    //         ...employeeToUpdate,
+    //         ...employeeUpdated
+    //     };
+    //     const updatedEmployeeList = employeeList.map(employee => employee.id !== +id ? employee : employeeToUpdate);
+    //     return { updatedEmployee: 1, employee: employeeToUpdate, employeeList: updatedEmployeeList };
+    // };
+
+    // createEmployee(newEmployee: Employee) {
+    //     const newEmployeeList = [...employeeList, newEmployee];
+    //     return { createdEmployee: 1, employee: newEmployee, employeeList: newEmployeeList };
+    // };
+
+    // deleteEmployee(id: string) {
+    //     const employeeToDelete = employeeList.filter(employee => employee.id !== Number(id));
+    //     return { deletedEmployee: 1, employeeList: employeeToDelete };
+    // };
 };
 
 
