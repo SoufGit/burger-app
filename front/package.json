@@ -14,8 +14,9 @@
         "webpackAnalyser": "npm analyser.js"
     },
     "dependencies": {
-        "@material-ui/core": "^4.10.2",
+        "@material-ui/core": "^4.11.0",
         "@material-ui/icons": "^4.9.1",
+        "@material-ui/lab": "^4.0.0-alpha.56",
         "classnames": "^2.2.6",
         "material-table": "^1.64.0",
         "moment": "^2.24.0",
