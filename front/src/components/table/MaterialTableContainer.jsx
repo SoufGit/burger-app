@@ -240,7 +240,10 @@ const MaterialTableContainer = () => {
 
                                         return {
                                             ...prevState,
-                                            dataList: dataUpdate
+                                            dataList: dataUpdate,
+                                            isAlertOpen: true,
+                                            msg: result.message,
+                                            severity: 'success'
                                         };
                                     });
                                 }
