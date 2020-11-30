@@ -153,7 +153,7 @@ const DrawerContainer = ({children}) => {
                             <ListItemText primary={'Accueil'} />
                         </ListItem>
                     </Link>
-                    {['Administration', 'Teams', 'CRA'].map((text, index) =>
+                    {['Administration', 'Employees', 'CRA'].map((text, index) =>
                         <Link to={getTextLink(text)} className={classes.link} key={text}>
                             <ListItem button key={text}>
                                 <ListItemIcon>{index % 2 === 0 ? <HistoryIcon /> : <PeopleOutlineIcon />}</ListItemIcon>

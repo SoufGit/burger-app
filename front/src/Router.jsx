@@ -25,7 +25,11 @@ const Router = () =>
                     component={(props) => <TableContainer {...props} />}
                 />
                 <Route
-                    path="/teams"
+                    path="/employees"
+                    component={(props) => <MaterialTableContainer {...props} />}
+                />
+                <Route
+                    path="/employee(:id)"
                     component={(props) => <MaterialTableContainer {...props} />}
                 />
             </Switch>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {makeStyles, useTheme, withStyles} from '@material-ui/core/styles';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import IconButton from '@material-ui/core/IconButton';
+import Check from '@material-ui/icons/Check';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
@@ -16,8 +17,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-
-const data = require('../../data/data.json');
+import {BACK_URL} from '../../Configuration.js';
+import Link from '@material-ui/core/Link';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -125,6 +126,7 @@ const getComparator = (order, orderBy) => (order === "desc"
     : (aa, bb) => -descendingComparator(aa, bb, orderBy));
 
 const stableSort = (array, comparator) => {
+    console.log('stableSortstableSort', array);
     const stabilizedThis = array.map((el, index) => [el, index]);
 
     stabilizedThis.sort((aa, bb) => {
@@ -140,7 +142,7 @@ const stableSort = (array, comparator) => {
     return stabilizedThis.map(el => el[0]);
 };
 
-const rows = data.employeeList.map(item => createData(item)).sort((aa, bb) => (aa.name < bb.name ? -1 : 1));
+
 
 const useStyles2 = makeStyles({
     table: {
@@ -183,6 +185,12 @@ const headCells = [
         id: 'outDate',
         label: 'Date de sortie',
         numeric: false
+    },
+    {
+        disablePadding: false,
+        id: 'action',
+        label: 'Actions',
+        numeric: false
     }
 ];
 
@@ -193,6 +201,23 @@ const CustomPaginationActionsTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
+    const [dataList, setDataList] = React.useState([]);
+
+    React.useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch(`${BACK_URL}/employees`);
+                const dataList = await response.json();
+                setDataList(dataList);
+            } catch(error) {
+                console.log('errorerrorerror', error);
+            }
+            // ...
+        }
+        fetchData();
+    }, []);
+
+    const rows = dataList.map(item => createData(item)).sort((aa, bb) => (aa.name < bb.name ? -1 : 1));
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - (page * rowsPerPage));
 
@@ -259,6 +284,13 @@ const CustomPaginationActionsTable = () => {
                                 </TableCell>
                                 <TableCell >
                                     {row.outDate}
+                                </TableCell>
+                                <TableCell >
+                                    <Link color='inherit' href='/employees' onClick={() => {
+                                        console.info("I'm a button.");
+                                    }}>
+                                        <Check />
+                                    </Link>
                                 </TableCell>
                             </StyledTableRow>)}
 

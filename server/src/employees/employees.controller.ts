@@ -29,8 +29,11 @@ export class EmployeesController {
     };
 
     @Patch(':id')
-    updateEmployee(@Param('id') id: string, @Body() employeeUpdated: Employee) {
-        return this.employeesService.updateEmployee(id, employeeUpdated);
+    updateEmployee(@Res() res, @Param('id') id: string, @Body() employeeUpdated: Employee) {
+        this.employeesService.updateEmployee(id, employeeUpdated);
+        return res.status(HttpStatus.OK).json({
+            message: "UPDATED has been added successfully",
+        });
     };
 
     @Post()
@@ -40,13 +43,18 @@ export class EmployeesController {
         return res.status(HttpStatus.OK).json({
             message: "Post has been added successfully",
             addedEmployee: 1,
-            employee: employeeAdded
+            employeeAdded
         });
         // await this.employeesService.createEmployee(createEmployeeDto);
     }
 
     @Delete(':id')
-    deleteEmployee(@Param('id') id: string) {
-        return this.employeesService.deleteEmployee(id);
+    deleteEmployee(@Res() res, @Param('id') id: string) {
+        if (res.statusCode === HttpStatus.OK) {
+            this.employeesService.deleteEmployee(id);
+            return res.status(HttpStatus.OK).json({
+                message: "Delete has been added successfully"
+            });
+        }
     };
 };

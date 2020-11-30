@@ -1,7 +1,13 @@
 /* eslint-disable react/display-name */
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useEffect, useState} from 'react';
 import MaterialTable from 'material-table';
-const data = require('../../data/data.json');
+import Alert from '@material-ui/lab/Alert';
+
+import Slide from '@material-ui/core/Slide';
+import Snackbar from '@material-ui/core/Snackbar';
+import {BACK_URL} from '../../Configuration.js';
+
+//const data = require('../../data/data.json');
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -18,6 +24,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import {red} from '@material-ui/core/colors';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -39,7 +46,49 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
+const addEmployee = async addEmployee => {
+    try {
+        const response = await fetch(`${BACK_URL}/employees`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(addEmployee)
+        });
+        return await response.json();
+    } catch(error) {
+        console.log('errorerrorerror', error);
+    }
+};
+
+const updateEmployee = async (id, employeeUpdated) => {
+    try {
+        const response = await fetch(`${BACK_URL}/employees/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(employeeUpdated)
+        });
+        return await response.json();
+    } catch(error) {
+        console.log('errorerrorerror', error);
+    }
+};
+
+const deleteEmployee = async id => {
+    try {
+        const response = await fetch(`${BACK_URL}/employees/${id}`, {
+            method: 'DELETE'
+        });
+        return await response.json();
+    } catch(error) {
+        console.log('errorerrorerror', error);
+    }
+};
+
 const MaterialTableContainer = () => {
+
     const [state, setState] = useState({
         columns: [
             {
@@ -58,94 +107,161 @@ const MaterialTableContainer = () => {
                 field: 'outDate',
                 title: 'Date de sortie'
             }
-        ]
+        ],
+        dataList: [],
+        isAlertOpen: false,
+        msg: ''
     });
 
-    return (
-        <MaterialTable
-            title="Liste des employés"
-            columns={state.columns}
-            data={data.employeeList}
-            icons={tableIcons}
-            localization={{
-                body: {
-                    addTooltip: 'toto',
-                    emptyDataSourceMessage: 'No records to display',
-                    filterRow: {
-                        filterTooltip: 'Filter'
+    console.log('STATE', state);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch(`${BACK_URL}/employees`);
+                const dataList = await response.json();
+                setState((prevState) => {
+                    return {
+                        ...prevState,
+                        dataList
                     }
-                },
-                header: {
-                    actions: 'Actiojjjjns'
-                },
-                pagination: {
-                    labelDisplayedRows: '{from}-{to} of {count}'
-                },
-                toolbar: {
-                    nRowsSelected: '{0} row(s) selected',
-                    searchPlaceholder: 'Recherchehkjkkjjk'
-                }
-            }}
-            options={{
-                actionsColumnIndex: -1,
-                headerStyle: {
-                    backgroundColor: '#3f51b5',
-                    color: '#FFF'
-                }
-            }}
-            editable={{
-                onRowAdd: (newData) =>
-                    new Promise(resolve => {
-                        setTimeout(() => {
-                            resolve();
-                            setState((prevState) => {
-                                const dataAdd = [...prevState.data];
+                });
+            } catch(error) {
+                console.log('errorerrorerror', error);
+            }
+            // ...
+        }
+        fetchData();
+    }, []); // Or [] if effect doesn't need props or state
 
-                                dataAdd.push(newData);
+    const handleAlertClose = () => {
+        setState({
+            ...state,
+            isAlertOpen: false
+        });
+    };
 
-                                return {
-                                    ...prevState,
-                                    dataAdd
-                                };
-                            });
-                        }, 600);
-                    }),
-                onRowDelete: (oldData) =>
-                    new Promise(resolve => {
-                        setTimeout(() => {
-                            resolve();
-                            setState((prevState) => {
-                                const dataDelete = [...prevState.data];
+    const SlideTransition = props => {
+        return <Slide {...props} direction="right" />;
+    }
 
-                                dataDelete.splice(dataDelete.indexOf(oldData), 1);
-
-                                return {
-                                    ...prevState,
-                                    dataDelete
-                                };
-                            });
-                        }, 600);
-                    }),
-                onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve) => {
-                        setTimeout(() => {
-                            resolve();
-                            if(oldData) {
+    return (
+        <React.Fragment>
+            <MaterialTable
+                title="Liste des employés"
+                columns={state.columns}
+                data={state.dataList}
+                icons={tableIcons}
+                localization={{
+                    body: {
+                        addTooltip: 'Ajouter un employé',
+                        emptyDataSourceMessage: 'Aucune donnée',
+                        filterRow: {
+                            filterTooltip: 'Filter'
+                        }
+                    },
+                    header: {
+                        actions: 'Actions'
+                    },
+                    pagination: {
+                        labelDisplayedRows: '{from}-{to} of {count}'
+                    },
+                    toolbar: {
+                        nRowsSelected: '{0} row(s) selected',
+                        searchPlaceholder: 'Rechercher'
+                    }
+                }}
+                options={{
+                    actionsColumnIndex: -1,
+                    headerStyle: {
+                        backgroundColor: '#3f51b5',
+                        color: '#FFF'
+                    }
+                }}
+                editable={{
+                    onRowAdd: (newData) =>
+                        new Promise(resolve => {
+                            setTimeout(async () => {
+                                resolve();
+                                // Retour pour affichage de msg succès
+                                const result = await addEmployee(newData);
                                 setState((prevState) => {
-                                    const dataUpdate = [...prevState.data];
+                                    const dataAdd = [...prevState.dataList];
 
-                                    dataUpdate[dataUpdate.indexOf(oldData)] = newData;
+                                    dataAdd.push(newData);
 
                                     return {
                                         ...prevState,
-                                        dataUpdate
+                                        dataList: dataAdd,
+                                        isAlertOpen: true,
+                                        msg: result.message,
+                                        severity: 'success'
                                     };
                                 });
-                            }
-                        }, 600);
-                    })
-            }}
-        />
+                            }, 600);
+                        }),
+                    onRowDelete: (oldData) =>
+                        new Promise(resolve => {
+                            setTimeout(async () => {
+                                resolve();
+                                const {_id} = oldData;
+                                // Retour pour affichage de msg succès
+                                const result = await deleteEmployee(_id);
+                                if(result.message) {
+                                    console.log('resultresultresult', result);
+                                    setState((prevState) => {
+                                        const dataDelete = [...prevState.dataList];
+
+                                        dataDelete.splice(dataDelete.indexOf(oldData), 1);
+
+                                        return {
+                                            ...prevState,
+                                            dataList: dataDelete,
+                                            isAlertOpen: true,
+                                            msg: result.message,
+                                            severity: 'success'
+                                        };
+                                    });
+                                }
+                            }, 600);
+                        }),
+                    onRowUpdate: (newData, oldData) =>
+                        new Promise((resolve) => {
+                            setTimeout(async () => {
+                                resolve();
+                                if(oldData) {
+                                    const {_id} = oldData;
+                                    // Retour pour affichage de msg succès
+                                    const result = await updateEmployee(_id, newData);
+                                    setState((prevState) => {
+                                        const dataUpdate = [...prevState.dataList];
+
+                                        dataUpdate[dataUpdate.indexOf(oldData)] = newData;
+
+                                        return {
+                                            ...prevState,
+                                            dataList: dataUpdate,
+                                            isAlertOpen: true,
+                                            msg: result.message,
+                                            severity: 'success'
+                                        };
+                                    });
+                                }
+                            }, 600);
+                        })
+                }}
+            />
+            <Snackbar
+                open={state.isAlertOpen}
+                autoHideDuration={4000}
+                onClose={handleAlertClose}
+                TransitionComponent={SlideTransition}
+            >
+                <Alert severity={state.severity}>
+                    {state.msg}
+                </Alert>
+            </Snackbar>
+        </React.Fragment>
     );
 };
 
