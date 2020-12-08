@@ -178,7 +178,8 @@ const headCells = [
         disablePadding: false,
         id: 'entryDate',
         label: 'Date dentrée',
-        numeric: false
+        numeric: false,
+        type: 'date'
     },
     {
         disablePadding: false,
@@ -241,6 +242,11 @@ const CustomPaginationActionsTable = () => {
         handleRequestSort(event, property);
     };
 
+    const convertDate = dateToConvert => {
+        const dateConverted = new Date(dateToConvert);
+        return dateConverted.toLocaleDateString()
+    }
+
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="custom pagination table">
@@ -279,11 +285,11 @@ const CustomPaginationActionsTable = () => {
                                 <TableCell >
                                     {row.name}
                                 </TableCell>
-                                <TableCell >
-                                    {row.entryDate}
+                                <TableCell>
+                                    {convertDate(row.entryDate)}
                                 </TableCell>
                                 <TableCell >
-                                    {row.outDate}
+                                    {convertDate(row.outDate)}
                                 </TableCell>
                                 <TableCell >
                                     <Link color='inherit' href='/employees' onClick={() => {
