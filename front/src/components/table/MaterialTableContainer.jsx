@@ -2,10 +2,16 @@
 import React, {forwardRef, useEffect, useState} from 'react';
 import MaterialTable from 'material-table';
 import Alert from '@material-ui/lab/Alert';
-
+import DatePickerField from 'Components/datePicker/DatePickerField';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Slide from '@material-ui/core/Slide';
+import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
+import french from "date-fns/locale/fr";
 import {BACK_URL} from '../../Configuration.js';
+import DateFnsUtils from '@date-io/date-fns';
+import {DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 
 //const data = require('../../data/data.json');
 
@@ -20,6 +26,8 @@ import Edit from '@material-ui/icons/Edit';
 import FilterList from '@material-ui/icons/FilterList';
 import FirstPage from '@material-ui/icons/FirstPage';
 import LastPage from '@material-ui/icons/LastPage';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import IconButton from '@material-ui/core/IconButton';
 import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
@@ -39,6 +47,7 @@ const tableIcons = {
     LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
     NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
     PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+    CalendarIcon: forwardRef((props, ref) => <CalendarTodayIcon {...props} ref={ref} />),
     ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
     Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
@@ -57,7 +66,7 @@ const addEmployee = async addEmployee => {
         });
         return await response.json();
     } catch(error) {
-        console.log('errorerrorerror', error);
+        console.log('errorerrorerror_addEmployee', error);
     }
 };
 
@@ -72,7 +81,7 @@ const updateEmployee = async (id, employeeUpdated) => {
         });
         return await response.json();
     } catch(error) {
-        console.log('errorerrorerror', error);
+        console.log('errorerrorerror_updateEmployee', error);
     }
 };
 
@@ -83,12 +92,24 @@ const deleteEmployee = async id => {
         });
         return await response.json();
     } catch(error) {
-        console.log('errorerrorerror', error);
+        console.log('errorerrorerror_deleteEmployee', error);
     }
 };
 
-const MaterialTableContainer = () => {
+const displayDatePicker = ({onChange, value}, rowData) => (
+    <DatePickerField
+        local={french}
+        maxDateMessage={'La date dentrée ne doit être supérieur à la date de sortie'}
+        minDate={rowData.entryDate || null}
+        minDateMessage={'La date de sortie ne doit être inférieur à la date dentrée'}
+        onChange={onChange}
+        value={value}
+    />
+)
 
+const MaterialTableContainer = () => {
+    const invalidRecordName = {isValid: false, helperText: 'Obligatoire, 3 caractères minimum'};
+    const [datePickerError, setDatePickerError] = useState(false);
     const [state, setState] = useState({
         columns: [
             {
@@ -97,23 +118,57 @@ const MaterialTableContainer = () => {
             },
             {
                 field: 'name',
-                title: 'Nom'
+                title: 'Nom',
+                validate: rowData => rowData.name ? (rowData.name?.length < 3
+                    ? invalidRecordName : true)
+                    : invalidRecordName
             },
             {
                 field: 'entryDate',
-                title: 'Date dentrée'
+                title: 'Date dentrée',
+                type: "date",
+                // validate: rowData => {
+                //     console.log('datePickerError', datePickerError);
+                //     if(!rowData.entryDate) {
+                //         //return {isValid: false, helperText: 'Obligatoire, 3 caractères minimum'};
+                //     }
+                //     else {
+                //         //return true;
+                //     }
+                // },
+                editComponent: props => (
+                    <DatePickerField
+                        maxDateMessage={'La date dentrée ne doit être supérieur à la date de sortie'}
+                        maxDate={props.rowData.outDate}
+                        onChange={props.onChange}
+                        value={props.value}
+                        onAccept={() => setDatePickerError(false)}
+                        onError={error => setDatePickerError(!!error)}
+                    />
+                )
             },
             {
                 field: 'outDate',
-                title: 'Date de sortie'
+                title: 'Date de sortie',
+                type: "date",
+                editComponent: props => (
+                    <DatePickerField
+                        maxDateMessage={'La date dentrée ne doit être supérieur à la date de sortie'}
+                        minDate={props.rowData.entryDate}
+                        minDateMessage={'La date de sortie ne doit être inférieur à la date dentrée'}
+                        onChange={props.onChange}
+                        value={props.value}
+                        onAccept={() => setDatePickerError(false)}
+                        onError={error => setDatePickerError(!!error)}
+                    />
+                )
             }
         ],
+        datePickerError: false,
         dataList: [],
         isAlertOpen: false,
         msg: ''
     });
-
-    console.log('STATE', state);
 
     useEffect(() => {
         async function fetchData() {
@@ -127,7 +182,7 @@ const MaterialTableContainer = () => {
                     }
                 });
             } catch(error) {
-                console.log('errorerrorerror', error);
+                console.log('errorerrorerror_useEffect', error);
             }
             // ...
         }
@@ -143,7 +198,7 @@ const MaterialTableContainer = () => {
 
     const SlideTransition = props => {
         return <Slide {...props} direction="right" />;
-    }
+    };
 
     return (
         <React.Fragment>
@@ -155,10 +210,18 @@ const MaterialTableContainer = () => {
                 localization={{
                     body: {
                         addTooltip: 'Ajouter un employé',
+                        editTooltip: 'Editer un employé',
+                        deleteTooltip: 'Supprimer un employé',
+                        editRow: {
+                            deleteText: 'Etes-vous de vouloir supprimer cet employé ?',
+                            cancelTooltip: 'Annuler',
+                            saveTooltip: 'Valider'
+                        },
                         emptyDataSourceMessage: 'Aucune donnée',
                         filterRow: {
                             filterTooltip: 'Filter'
-                        }
+                        },
+                        dateTimePickerLocalization: french
                     },
                     header: {
                         actions: 'Actions'
@@ -179,22 +242,24 @@ const MaterialTableContainer = () => {
                     }
                 }}
                 editable={{
+                    //isEditable: rowData => {console.log(rowData); return (isRowEditable);},
                     onRowAdd: (newData) =>
                         new Promise(resolve => {
                             setTimeout(async () => {
                                 resolve();
                                 // Retour pour affichage de msg succès
                                 const result = await addEmployee(newData);
+                                const {employeeAdded, message} = result;
                                 setState((prevState) => {
                                     const dataAdd = [...prevState.dataList];
 
-                                    dataAdd.push(newData);
+                                    dataAdd.push(employeeAdded);
 
                                     return {
                                         ...prevState,
                                         dataList: dataAdd,
                                         isAlertOpen: true,
-                                        msg: result.message,
+                                        msg: message,
                                         severity: 'success'
                                     };
                                 });
@@ -208,7 +273,6 @@ const MaterialTableContainer = () => {
                                 // Retour pour affichage de msg succès
                                 const result = await deleteEmployee(_id);
                                 if(result.message) {
-                                    console.log('resultresultresult', result);
                                     setState((prevState) => {
                                         const dataDelete = [...prevState.dataList];
 
@@ -226,8 +290,12 @@ const MaterialTableContainer = () => {
                             }, 600);
                         }),
                     onRowUpdate: (newData, oldData) =>
-                        new Promise((resolve) => {
+                        new Promise((resolve, reject) => {
                             setTimeout(async () => {
+                                if(datePickerError) {
+                                    reject();
+                                    return;
+                                }
                                 resolve();
                                 if(oldData) {
                                     const {_id} = oldData;
