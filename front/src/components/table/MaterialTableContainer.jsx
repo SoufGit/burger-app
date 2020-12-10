@@ -119,7 +119,7 @@ const MaterialTableContainer = () => {
             {
                 field: 'name',
                 title: 'Nom',
-                validate: rowData => rowData.name ? (rowData.name?.length < 3
+                validate: rowData => rowData.name ? (rowData.name.length < 3
                     ? invalidRecordName : true)
                     : invalidRecordName
             },

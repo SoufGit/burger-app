@@ -5,35 +5,38 @@ import LayoutContainer from 'Components/layout/LayoutContainer';
 import BigCalendar from 'Components/calendar/CalendarContainer';
 import MaterialTableContainer from 'Components/table/MaterialTableContainer';
 import TableContainer from 'Components/table/TableContainer';
+import ErrorBoundary from 'Components/errorBoundary/ErrorBoundary';
 import App from './App';
 
 const Router = () =>
     <BrowserRouter>
-        <LayoutContainer>
-            <Switch>
-                <Route
-                    exact
-                    path="/"
-                    component={(props) => <App {...props} />}
-                />
-                <Route
-                    path="/cra"
-                    component={(props) => <BigCalendar {...props} />}
-                />
-                <Route
-                    path="/administration"
-                    component={(props) => <TableContainer {...props} />}
-                />
-                <Route
-                    path="/employees"
-                    component={(props) => <MaterialTableContainer {...props} />}
-                />
-                <Route
-                    path="/employee(:id)"
-                    component={(props) => <MaterialTableContainer {...props} />}
-                />
-            </Switch>
-        </LayoutContainer>
+        <ErrorBoundary>
+            <LayoutContainer>
+                <Switch>
+                    <Route
+                        exact
+                        path="/"
+                        component={(props) => <ErrorBoundary><App {...props} /></ErrorBoundary>}
+                    />
+                    <Route
+                        path="/cra"
+                        component={(props) => <ErrorBoundary><BigCalendar {...props} /></ErrorBoundary>}
+                    />
+                    <Route
+                        path="/administration"
+                        component={(props) => <ErrorBoundary><TableContainer {...props} /></ErrorBoundary>}
+                    />
+                    <Route
+                        path="/employees"
+                        component={(props) => <ErrorBoundary><MaterialTableContainer {...props} /></ErrorBoundary>}
+                    />
+                    <Route
+                        path="/employee(:id)"
+                        component={(props) => <ErrorBoundary><MaterialTableContainer {...props} /></ErrorBoundary>}
+                    />
+                </Switch>
+            </LayoutContainer>
+        </ErrorBoundary>
     </BrowserRouter>;
 
 export default Router;
