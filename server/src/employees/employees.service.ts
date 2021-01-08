@@ -32,7 +32,8 @@ export class EmployeesService {
     }
 
     async deleteEmployee(id: string): Promise<any> {
-        return await this.employeeModel.findByIdAndRemove(id);
+        //console.log('deleteEmployeedeleteEmployee', id);
+        return await this.employeeModel.findByIdAndDelete(id);
     }
     // getEmployee(id: string) {
     //     return employeeList.find(employee => employee.id === Number(id));
