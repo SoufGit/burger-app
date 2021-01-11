@@ -8,6 +8,7 @@ const InputItem = ({id, label, placeholder, value, ...otherProps}) =>
         label={label}
         placeholder={placeholder}
         value={value}
+        margin="normal"
         {...otherProps}
     />;
 

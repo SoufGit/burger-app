@@ -126,7 +126,6 @@ const getComparator = (order, orderBy) => (order === "desc"
     : (aa, bb) => -descendingComparator(aa, bb, orderBy));
 
 const stableSort = (array, comparator) => {
-    console.log('stableSortstableSort', array);
     const stabilizedThis = array.map((el, index) => [el, index]);
 
     stabilizedThis.sort((aa, bb) => {
