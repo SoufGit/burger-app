@@ -1,25 +1,26 @@
 import React from 'react';
 import InputItem from './InputItem';
 
-const InputSelect = ({values, handleInputSelectChange, className}) =>
+const InputSelect = ({values, handleInputSelectChange, classes, label, value, ...otherProps}) =>
     <InputItem
         select
+        defaultValue={value}
         id="standard-select-currency-native"
-        label="Sélectionner un employé"
+        label={label}
         onChange={handleInputSelectChange}
-        className={className.selectField}
+        className={classes.selectField}
         SelectProps={{
             MenuProps: {
-                className: className.menu
+                className: classes.menu
             },
             native: true
         }}
         helperText="Ce champs n'est pas obligatoire"
-        margin="normal"
+        {...otherProps}
     >
         <option value="" />
-        {values.employeeList.map(option =>
-            <option key={option.id} value={option.id}>
+        {values.map(option =>
+            <option key={option._id} value={option._id}>
                 {option.name}
             </option>)}
     </InputItem>;

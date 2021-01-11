@@ -5,12 +5,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-import ButtonCustom from '../button/Button';
+import ButtonCancel from 'Components/button/Button';
+import ButtonValidate from 'Components/button/Button';
 
 // eslint-disable-next-line react/display-name
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const DialogItem = ({isOpen, handleClose, contentText, contentTitle, children}) =>
+const DialogItem = ({isOpen, handleClose, handleValidate, contentText, contentTitle, children, ...otherProps}) =>
     <Dialog
         open={isOpen}
         TransitionComponent={Transition}
@@ -18,9 +19,12 @@ const DialogItem = ({isOpen, handleClose, contentText, contentTitle, children}) 
         onClose={handleClose}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
+        maxWidth='xs'
+        fullWidth={true}
+        {...otherProps}
     >
         <DialogTitle id="alert-dialog-slide-title">{contentTitle}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
             <DialogContentText id="alert-dialog-slide-description">
                 {contentText}
             </DialogContentText>
@@ -28,13 +32,13 @@ const DialogItem = ({isOpen, handleClose, contentText, contentTitle, children}) 
         </DialogContent>
 
         <DialogActions>
-            <ButtonCustom
-                onClick={() => handleClose(true)}
+            <ButtonCancel
+                onClick={handleClose}
                 color="primary"
                 text="Annuler"
             />
-            <ButtonCustom
-                onClick={() => handleClose(false)}
+            <ButtonValidate
+                onClick={handleValidate}
                 color="primary"
                 text="Valider"
             />

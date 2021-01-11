@@ -1,5 +1,5 @@
-
 const common = require('./webpack.common');
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 // Webpack v4: `MiniCssExtractPlugin` replaces `ExtractTextPlugin` and is specific to CSS
 // https://github.com/webpack-contrib/mini-css-extract-plugin
@@ -12,6 +12,7 @@ let devConfig = merge(common, {
         filename: 'js/[name].bundle.js',
     },
     plugins: [
+        new webpack.DefinePlugin({isDebugModeEnabled: true}),
         new MiniCssExtractPlugin({
             filename: 'css/[name].css',
         })

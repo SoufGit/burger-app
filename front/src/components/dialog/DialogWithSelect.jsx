@@ -1,11 +1,14 @@
-import React from 'react';
+import React, {useState} from "react";
 import {makeStyles} from '@material-ui/core/styles';
+import DatePickerField from 'Components/datePicker/DatePickerField';
 import DialogItem from './DialogItem';
 import {InputItem, InputSelect} from '../input';
 
 const useStyles = makeStyles(theme => ({
     container: {
-        marginBottom: theme.spacing(3)
+        marginBottom: theme.spacing(3),
+        display: 'flex',
+        flexDirection: 'column',
     },
     dense: {
         marginTop: 19
@@ -14,44 +17,61 @@ const useStyles = makeStyles(theme => ({
         width: 200
     },
     selectField: {
-        marginLeft: theme.spacing(1),
+        //marginLeft: theme.spacing(1),
         // MarginRight: theme.spacing(12),
-        width: 200
+        width: 300
     },
     textField: {
         // MarginLeft: theme.spacing(1),
-        marginRight: theme.spacing(10),
-        width: 250
+        //marginRight: theme.spacing(10),
+        width: 300
     }
 }));
 
-const DialogWithSelect = ({isOpen, values, handleInputSelectChange, handleDialogClose, handleInputChange, inputValue, inputSelectValue}) => {
+const DialogWithSelect = ({isOpen, values, handleSelectEmployeeChange, handleSelectEventTypeChange, handleDialogClose, handleInputChange, eventTextValue, employeeId,
+    eventTypeId, isInputTextError, inputHelperText, handleValidate, handleDateChange, selectedDate}) => {
     const classes = useStyles();
-
+    const employeeName = employeeId && values.find(employee => employee._id === employeeId).name
+    const toto = [{_id: 111, name: 'Congés'}, {_id: 1, name: 'toto'}, {_id: 11, name: 'Fermé'}];
     return (
         <DialogItem
             isOpen={isOpen}
             handleClose={handleDialogClose}
-            contentText="Let Google help apps determine location."
-            contentTitle="Saisie des informations"
+            handleValidate={handleValidate}
+            contentText='Let Google help apps determine location.'
+            contentTitle={employeeName || 'Créer un événement'}
         >
             <div className={classes.container}>
-                <InputItem
-                    id="standard-with-placeholder"
-                    label="Saisir le texte..."
-                    className={classes.textField}
-                    margin="normal"
-                    onChange={handleInputChange}
-                    value={inputValue}
+                <InputSelect
+                    values={toto}
+                    handleInputSelectChange={handleSelectEventTypeChange}
+                    classes={classes}
+                    label={'Type dévénement'}
+                    value={eventTypeId}
                     required
                 />
                 <InputSelect
                     values={values}
-                    handleInputSelectChange={handleInputSelectChange}
-                    className={classes}
-                    value={inputSelectValue}
-                    margin="normal"
+                    handleInputSelectChange={handleSelectEmployeeChange}
+                    classes={classes}
+                    label={'Sélectionner un employé'}
+                    value={employeeId}
+                    required
                 />
+                <InputItem
+                    id="standard-with-placeholder"
+                    label="Saisir le texte..."
+                    className={classes.textField}
+                    onChange={handleInputChange}
+                    value={eventTextValue}
+                    error={isInputTextError}
+                    helperText={inputHelperText}
+                    required
+                />
+                <DatePickerField
+                    label="DD/MM/YYYY"
+                    onChange={handleDateChange}
+                    value={selectedDate} />
             </div>
         </DialogItem>
     );

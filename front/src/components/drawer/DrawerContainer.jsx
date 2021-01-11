@@ -16,7 +16,7 @@ import Typography from '@material-ui/core/Typography';
 
 import {ChevronLeftIcon, ChevronRightIcon, GroupIcon, HistoryIcon, HomeIcon, IconButton, MailIcon, MenuIcon, PeopleOutlineIcon, PersonIcon} from '../../assets/icons';
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -88,7 +88,7 @@ const getTextLink = text => `/${text.toLowerCase()}`;
 const DrawerContainer = ({children}) => {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
 
     const handleDrawerOpen = () => {
         setOpen(true);

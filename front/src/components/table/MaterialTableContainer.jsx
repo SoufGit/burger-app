@@ -9,9 +9,10 @@ import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import french from "date-fns/locale/fr";
-import {BACK_URL} from '../../Configuration.js';
+//import {BACK_URL} from '../../Configuration.js';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import {BACK_URL, fetchApiRequest, requestContentTypes, requestMethods} from 'Helpers/api';
 
 //const data = require('../../data/data.json');
 
@@ -55,46 +56,11 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const addEmployee = async addEmployee => {
-    try {
-        const response = await fetch(`${BACK_URL}/employees`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(addEmployee)
-        });
-        return await response.json();
-    } catch(error) {
-        console.log('errorerrorerror_addEmployee', error);
-    }
-};
+const URL_EMPLOYEES = '/employees';
 
-const updateEmployee = async (id, employeeUpdated) => {
-    try {
-        const response = await fetch(`${BACK_URL}/employees/${id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(employeeUpdated)
-        });
-        return await response.json();
-    } catch(error) {
-        console.log('errorerrorerror_updateEmployee', error);
-    }
-};
-
-const deleteEmployee = async id => {
-    try {
-        const response = await fetch(`${BACK_URL}/employees/${id}`, {
-            method: 'DELETE'
-        });
-        return await response.json();
-    } catch(error) {
-        console.log('errorerrorerror_deleteEmployee', error);
-    }
-};
+const addEmployee = async addEmployee => await fetchApiRequest(URL_EMPLOYEES, requestMethods.POST, addEmployee);
+const updateEmployee = async (id, employeeUpdated) => await fetchApiRequest(`${URL_EMPLOYEES}/${id}`, requestMethods.PATCH, employeeUpdated);
+const deleteEmployee = async id => await fetchApiRequest(`${URL_EMPLOYEES}/${id}`, requestMethods.DELETE);
 
 const displayDatePicker = ({onChange, value}, rowData) => (
     <DatePickerField
@@ -173,12 +139,13 @@ const MaterialTableContainer = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`${BACK_URL}/employees`);
-                const dataList = await response.json();
+                //const response = await fetch(`${BACK_URL}/employees`);
+                //const dataList = await response.json();
+                const responseApiEmployeeList = await fetchApiRequest(URL_EMPLOYEES);
                 setState((prevState) => {
                     return {
                         ...prevState,
-                        dataList
+                        dataList: responseApiEmployeeList
                     }
                 });
             } catch(error) {
@@ -318,6 +285,13 @@ const MaterialTableContainer = () => {
                             }, 600);
                         })
                 }}
+            />
+            <DialogItem
+                isOpen={isOpenConfirmDialog}
+                //handleClose={handleDialogClose}
+                //handleValidate={handleValidateDeleteEvent}
+                contentText='Etes-vous sur de vouloir supprimer cette événement ?'
+                contentTitle={`Suppression de ${eventTextValue}`}
             />
             <Snackbar
                 open={state.isAlertOpen}
