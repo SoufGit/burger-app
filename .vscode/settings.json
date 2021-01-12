@@ -3,4 +3,10 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
+    "jest.debugCodeLens.showWhenTestStateIn": [
+        "fail",
+        "unknown"
+    ],
+    "jest.showCoverageOnLoad": true,
+    "jest.rootPath": "front",
 }

@@ -10,7 +10,7 @@
 /build
 
 # misc
-.vscode/*.json
+//.vscode/*.json
 .DS_Store
 .env
 npm-debug.log*
