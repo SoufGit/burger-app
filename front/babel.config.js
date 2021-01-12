@@ -16,7 +16,13 @@ module.exports = function(api) {
         //"@babel/plugin-syntax-dynamic-import",
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-proposal-object-rest-spread",
-        "@babel/plugin-transform-classes"
+        "@babel/plugin-transform-classes",
+        // to JEST
+        '@babel/plugin-transform-runtime',
+        '@babel/plugin-transform-async-to-generator',
+        '@babel/plugin-proposal-export-default-from',
+        '@babel/plugin-proposal-export-namespace-from',
+        '@babel/plugin-transform-react-jsx'
     ];
 
     return {
