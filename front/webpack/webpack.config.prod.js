@@ -1,9 +1,9 @@
 
 const common = require('./webpack.common');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 // Webpack v4: `MiniCssExtractPlugin` replaces `ExtractTextPlugin` and is specific to CSS
 // https://github.com/webpack-contrib/mini-css-extract-plugin
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -13,7 +13,7 @@ process.env.REACT_WEBPACK_ENV = 'prod';
 const prodConfig = merge(common, {
     output: {
         //path: path.resolve(__dirname, 'dist'),
-        filename: 'js/[name].bundle.[hash].min.js',
+        filename: 'js/[name].bundle.[contenthash].min.js',
         publicPath: '/dist/'
     },
     plugins: [
@@ -22,7 +22,7 @@ const prodConfig = merge(common, {
             cleanOnceBeforeBuildPatterns: ['dist']
         }),
         new MiniCssExtractPlugin({
-            filename: 'css/[name].[hash].min.css',
+            filename: 'css/[name].[contenthash].min.css',
         }),
         // analyses the webpack statistics and gives a great visualization
         new BundleAnalyzerPlugin({
@@ -32,7 +32,7 @@ const prodConfig = merge(common, {
             defaultSizes: 'gzip'
         })
     ],
-    devtool: '',
+    devtool: false,
     mode: 'production',
     optimization: {
         minimizer: [
