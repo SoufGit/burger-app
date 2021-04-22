@@ -50,7 +50,7 @@ module.exports = {
                     {
                         loader: 'file-loader',
                         options: {
-                            name: '[name].[hash:7].[ext]',
+                            name: '[name].[contenthash:7].[ext]',
                             outputPath: 'fonts',
                         },
                     },
@@ -62,7 +62,7 @@ module.exports = {
                     {
                         loader: 'file-loader',
                         options: {
-                            name: '[name].[hash:7].[ext]',
+                            name: '[name].[contenthash:7].[ext]',
                             outputPath: 'images',
                         },
                     },
@@ -115,7 +115,7 @@ module.exports = {
     mode: process.env.NODE_ENV,
     watchOptions: {
         ignored: [
-            /node_modules/,
+            '**/node_modules',
             '**/*.bundle.css',
             '**/*.bundle.js',
             '**/*.html',

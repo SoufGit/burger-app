@@ -1,10 +1,9 @@
 const common = require('./webpack.common');
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 // Webpack v4: `MiniCssExtractPlugin` replaces `ExtractTextPlugin` and is specific to CSS
 // https://github.com/webpack-contrib/mini-css-extract-plugin
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
 process.env.REACT_WEBPACK_ENV = 'dev';
 let devConfig = merge(common, {
     output: {
@@ -17,7 +16,7 @@ let devConfig = merge(common, {
             filename: 'css/[name].css',
         })
     ],
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval-cheap-module-source-map',
     mode: 'development', //process.env.NODE_ENV,
 });
 
