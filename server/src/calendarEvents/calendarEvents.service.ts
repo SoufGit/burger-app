@@ -16,7 +16,6 @@ export class CalendarEventsService {
     }
 
     async getCalendarEventList(): Promise<CalendarEvent[]> {
-        console.log('CalendarEventCalendarEvent', CalendarEvent);
         return this.calendarEventModel.find().exec();
     }
 
